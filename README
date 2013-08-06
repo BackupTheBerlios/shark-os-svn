@@ -1,0 +1,25 @@
+ABOUT THIS AREA
+================
+This subverion repository is hosted at berlios.de
+This SVN area is the development arena we have decided to use to create the 
+scripts we use and/or need to create the SharkOS Distribution.
+
+Directory Setup
+===============
+The Directory structure is done as follows,
+
+*	trunk = development area
+*	tags = for now it will be used to add extra dev ideas, thoughts, code snippets. 
+Things that maybe useful will go here.
+*	branches = is the area where a snapshot of trunk is made, then develop until release ready.
+*	releases = are final releases that will not be developed any fürther - exception is if decided to continue
+with security updates.
+
+Join the SharkOS DevTeam
+=========================
+We hope to have a large Development Team (DevTeam) one day. The beginning of projects include a lot of work.
+Since SharkOS is a Linux based Operating System and is open source, released under the GPLv3. We want to make clear here that all this work is dependant on volenteer work.
+
+If you would like to spend some of your precious time, just email the DevTeam (devteam@shark-os.tk) and tell us about yourself, your age (this is needed for eventual legal purposes), what you would like to do and/or learn. If you would like to send a CV, then send that to hyperclock@shark-os.tk
+
+-- hyperclock, 06 Aug 2013
