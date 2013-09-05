@@ -1,0 +1,7 @@
+ReForger is a set of scripts designed to fork Ubuntu. Since I enjoy Debian and Ubuntu only to a "mixed feeling" towards both. The majority of Debian ist most enjoyable for me and only a small part of Ubuntu.
+
+So I decided to refactor the "builder scripts" from the gNewSense Project (www.gnewsense.org). These will be done so that we can fork Debian and add the parts of Ubuntu that I like into the new Distro. All of this on the fly.
+
+I am starting with the latest stable Debian base. See the website for more info, especially for Distro Release Information and help.
+
+-- hyperclock

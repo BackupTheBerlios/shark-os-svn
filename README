@@ -7,13 +7,12 @@ scripts we use and/or need to create the SharkOS Distribution.
 Directory Setup
 ===============
 The Directory structure is done as follows,
-
-*	trunk = development area
-*	tags = for now it will be used to add extra dev ideas, thoughts, code snippets. 
-Things that maybe useful will go here.
-*	branches = is the area where a snapshot of trunk is made, then develop until release ready.
-*	releases = are final releases that will not be developed any fürther - exception is if decided to continue
-with security updates.
+PROJECT_NAME
+     |
+	 |--> trunk = development area
+	 |--> tags = tob will be used for brainstorming, code snippets, etc. 
+ 	 |--> branches = snapshots getting ready for release.
+	 |--> releases = releases are kept here.
 
 Join the SharkOS DevTeam
 =========================
