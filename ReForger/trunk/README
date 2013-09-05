@@ -1,3 +1,7 @@
+SEE "docs/README" for an updated version. Below will be left in place, it is the original README.
+
+======================================================================================================
+
 This set of scripts is to create your own GNU/Linux distribution based on Ubuntu,
 including a livecd and repositories. It removes the non-free elements of
 Ubuntu. These scripts are currently used to create the gNewSense distribution.
