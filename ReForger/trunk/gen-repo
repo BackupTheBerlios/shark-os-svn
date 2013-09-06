@@ -36,9 +36,9 @@ Codename: ${RELEASE}-security
 Update: Upstream-security
 Architectures: $ALL_REPO_ARCHES source
 Components: $COMP1 $COMP2 $COMP3
-UDebComponents: main>$COMP1
+#UDebComponents: $COMP1
 SignWith: $SIGNINGKEY
-DscIndices: Sources Release . .gz
+#DscIndices: Sources Release . .gz
 #DebOverride: override.$RELEASE-security.bin
 #UDebOverride: override.$RELEASE-security.bin
 #DscOverride: override.$RELEASE-security.src
@@ -49,9 +49,9 @@ Codename: $RELEASE
 Update: Upstream Upstream-mate
 Architectures: $ALL_REPO_ARCHES source
 Components: $COMP1 $COMP2 $COMP3
-UDebComponents: main>$COMP1
+#UDebComponents: $COMP1
 SignWith: $SIGNINGKEY
-DscIndices: Sources Release . .gz
+#DscIndices: Sources Release . .gz
 #DebOverride: override.$RELEASE.bin
 #UDebOverride: override.$RELEASE.bin
 #DscOverride: override.$RELEASE.src
@@ -60,21 +60,24 @@ EOF
 cat >  conf/updates <<EOF
 Name: Upstream-security
 Method: $SEC_MIRROR
-Suite: ${SEC_MIRRORDIST}-security
-Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+Suite: $SEC_MIRRORDIST
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP3
 #FilterList: install purge-hardy
+VerifyRelease: blindtrust
 
 Name: Upstream
 Method: $MIRROR
 Suite: $MIRRORDIST
-Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP3
 #FilterList: install purge-hardy
+VerifyRelease: blindtrust
 
 Name: Upstream-mate
 Method: $MATE_MIRROR
 Suite: $MATE_MIRRORDIST
-Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+Components: main>$COMP1
 #FilterList: install purge-hardy
+VerifyRelease: blindtrust
 EOF
 
 if [ 1 == $UPDATES ]; then
@@ -82,9 +85,10 @@ cat >> conf/updates <<EOF
 
 Name: Upstream-updates
 Method: $UPD_MIRROR
-Suite: ${UPD_MIRRORDIST}-updates
-Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+Suite: $UPD_MIRRORDIST
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP3
 #FilterList: install purge-hardy
+VerifyRelease: blindtrust
 EOF
 
 cat >>  conf/distributions <<EOF
@@ -95,7 +99,7 @@ Codename: $RELEASE-updates
 Update: Upstream-updates
 Architectures: $ALL_REPO_ARCHES source
 Components: $COMP1 $COMP2 $COMP2
-UDebComponents: main
+UDebComponents: $COMP1
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
 #DebOverride: override.$RELEASE-updates.bin
@@ -109,9 +113,10 @@ cat >> conf/updates <<EOF
 
 Name: Upstream-backports
 Method: $BP_MIRROR
-Suite: ${BP_MIRRORDIST}-backports
-Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+Suite: $BP_MIRRORDIST
+Components: main>$COMP1
 #FilterList: install purge-hardy
+VerifyRelease: blindtrust
 EOF
 
 cat >>  conf/distributions <<EOF
@@ -122,7 +127,7 @@ Codename: $RELEASE-backports
 Update: Upstream-backports
 Architectures: $ALL_REPO_ARCHES source
 Components: coast ocean deepsea
-UDebComponents: main>$COMP1
+UDebComponents: $COMP1
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
 #DebOverride: override.$RELEASE-backports.bin

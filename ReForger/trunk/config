@@ -45,43 +45,45 @@ set -ex
 # Path to your Ubuntu dists tree. Note that the name is historical -
 # previously this *WAS* a local ubuntu mirror. With changes to builder,
 # this is now just the dists/ directory of the mirror (~40mb).
-MIRROR_LOCAL=/srv/ubuntu-hardy-mirror/
+MIRROR_LOCAL=/srv/main-wheezy-mirror/
 # Where to get updated upstream packages from. Currently only supports http
 # This should be configured to point at a local mirror (on your
 # network), or a local proxy (eg apt-cacher-ng). If using a proxy, you
 # should ensure that is configured to get its packages from a nearby mirror.
-MIRROR=http://ftp.de.debian.org/debian/
+MIRROR=http://ftp.debian.org/debian/
 # Name of our upstreams release
 MIRRORDIST=wheezy
 
 # ---------
 # Security
 # ---------
-SEC_MIRROR=http://security.debian.org/debian/
+SEC_MIRROR=http://security.debian.org/
 SEC_MIRRORDIST=wheezy/updates
+SEC_MIRROR_LOCAL=/srv/sec-wheezy-mirror/
 # --------
 # Updates
 # --------
-UPD_MIRROR=http://ftp.de.debian.org/
+UPD_MIRROR=http://ftp.de.debian.org/debian/
 UPD_MIRRORDIST=wheezy-updates
+UPD_MIRROR_LOCAL=/srv/upd-wheezy-mirror/
 # ----------
 # Backports
 # ----------
 BP_MIRROR=http://ftp.de.debian.org/debian-backports/
 BP_MIRRORDIST=wheezy-backports
-
+BP_MIRROR_LOCAL=/srv/bp-wheezy-mirror/
 # -----
 # Mate 
 # ----
-MATE_MIRROR=http://ftp.de.debian.org/debian/
+MATE_MIRROR=http://packages.mate-desktop.org/repo/debian/
 MATE_MIRRORDIST=wheezy
-
+MATE_MIRROR_LOCAL=/srv/mate-wheezy-mirror/
 # -----------
 # Multimedia
 # ----------
 MM_MIRROR=http://www.deb-multimedia.org/
 MM_MIRRORDIST=wheezy
-
+MM_MIRROR_LOCAL=/srv/mm-wheezy-mirror/
 
 
 ## DISTRO SPECIFIC CONFIGURATION
