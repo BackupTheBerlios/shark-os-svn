@@ -7,6 +7,11 @@ corresponding file /usr/share/doc/0bpackagename07/copyright.
 DISTRONAME comes with 0fABSOLUTELY NO WARRANTY07, to the extent
 permitted by applicable law.
 
+---
+
+This LiveCD was built with the gNewSense Builder.
+gNewSense Builder was written by Brian Brazil <brian.brazil@gmail.com>
+
 
 
 

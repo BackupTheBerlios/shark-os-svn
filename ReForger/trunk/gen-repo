@@ -21,6 +21,7 @@
 # -----------------------------------------------------------------------------
 
 
+
 # Get distro information
 . config
 
@@ -34,50 +35,56 @@ Label: $DISTRONAME
 Codename: ${RELEASE}-security
 Update: Upstream-security
 Architectures: $ALL_REPO_ARCHES source
-Components: main universe
-UDebComponents: main
+Components: $COMP1 $COMP2 $COMP3
+UDebComponents: main>$COMP1
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
-DebOverride: override.$RELEASE-security.bin
-UDebOverride: override.$RELEASE-security.bin
-DscOverride: override.$RELEASE-security.src
+#DebOverride: override.$RELEASE-security.bin
+#UDebOverride: override.$RELEASE-security.bin
+#DscOverride: override.$RELEASE-security.src
 
 Origin: $DISTRONAME
 Label: $DISTRONAME
 Codename: $RELEASE
-Update: Upstream
+Update: Upstream Upstream-mate
 Architectures: $ALL_REPO_ARCHES source
-Components: main universe
-UDebComponents: main
+Components: $COMP1 $COMP2 $COMP3
+UDebComponents: main>$COMP1
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
-DebOverride: override.$RELEASE.bin
-UDebOverride: override.$RELEASE.bin
-DscOverride: override.$RELEASE.src
+#DebOverride: override.$RELEASE.bin
+#UDebOverride: override.$RELEASE.bin
+#DscOverride: override.$RELEASE.src
 EOF
 
 cat >  conf/updates <<EOF
 Name: Upstream-security
-Method: $MIRROR
-Suite: ${MIRRORDIST}-security
-Components: main>main universe>universe
-FilterList: install purge-hardy
+Method: $SEC_MIRROR
+Suite: ${SEC_MIRRORDIST}-security
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+#FilterList: install purge-hardy
 
 Name: Upstream
 Method: $MIRROR
 Suite: $MIRRORDIST
-Components: main>main universe>universe
-FilterList: install purge-hardy
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+#FilterList: install purge-hardy
+
+Name: Upstream-mate
+Method: $MATE_MIRROR
+Suite: $MATE_MIRRORDIST
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+#FilterList: install purge-hardy
 EOF
 
 if [ 1 == $UPDATES ]; then
 cat >> conf/updates <<EOF
 
 Name: Upstream-updates
-Method: $MIRROR
-Suite: ${MIRRORDIST}-updates
-Components: main>main universe>universe
-FilterList: install purge-hardy
+Method: $UPD_MIRROR
+Suite: ${UPD_MIRRORDIST}-updates
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+#FilterList: install purge-hardy
 EOF
 
 cat >>  conf/distributions <<EOF
@@ -87,13 +94,13 @@ Label: $DISTRONAME
 Codename: $RELEASE-updates
 Update: Upstream-updates
 Architectures: $ALL_REPO_ARCHES source
-Components: main universe
+Components: $COMP1 $COMP2 $COMP2
 UDebComponents: main
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
-DebOverride: override.$RELEASE-updates.bin
-UDebOverride: override.$RELEASE-updates.bin
-DscOverride: override.$RELEASE-updates.src
+#DebOverride: override.$RELEASE-updates.bin
+#UDebOverride: override.$RELEASE-updates.bin
+#DscOverride: override.$RELEASE-updates.src
 EOF
 fi
 
@@ -101,10 +108,10 @@ if [ 1 == $BACKPORTS ]; then
 cat >> conf/updates <<EOF
 
 Name: Upstream-backports
-Method: $MIRROR
-Suite: ${MIRRORDIST}-backports
-Components: main>main universe>universe
-FilterList: install purge-hardy
+Method: $BP_MIRROR
+Suite: ${BP_MIRRORDIST}-backports
+Components: main>$COMP1 contrib>$COMP2 non-free>$COMP2
+#FilterList: install purge-hardy
 EOF
 
 cat >>  conf/distributions <<EOF
@@ -114,13 +121,13 @@ Label: $DISTRONAME
 Codename: $RELEASE-backports
 Update: Upstream-backports
 Architectures: $ALL_REPO_ARCHES source
-Components: main universe
-UDebComponents: main
+Components: coast ocean deepsea
+UDebComponents: main>$COMP1
 SignWith: $SIGNINGKEY
 DscIndices: Sources Release . .gz
-DebOverride: override.$RELEASE-backports.bin
-UDebOverride: override.$RELEASE-backports.bin
-DscOverride: override.$RELEASE-backports.src
+#DebOverride: override.$RELEASE-backports.bin
+#UDebOverride: override.$RELEASE-backports.bin
+#DscOverride: override.$RELEASE-backports.src
 EOF
 fi;
 

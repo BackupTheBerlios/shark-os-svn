@@ -1,29 +1,5 @@
-# -----------------------------------------------------------------------------
-#    Part of the ReForger scripts - Fork a Debian
-#    Copyright (C) 2012-2013  hyperclock (aka JMColeman & the SharkOS project.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# -----------------------------------------------------------------------------
-#
-# ------------------------------- Attribution ---------------------------------
-# -----------------------------------------------------------------------------
-
-
 # Put here overrides for binaries packages that can't be fetched from the
 # upstream mirror, e.g. renamed packages or packages from multiverse.
-
-
 gnewsense-artwork Section gnome
 gnewsense-desktop Section metapackages
 gnewsense-minimal Section metapackages

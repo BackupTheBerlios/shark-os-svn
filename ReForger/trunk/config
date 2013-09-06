@@ -22,11 +22,13 @@
 
 
 
-# -----------------------------------------------------------------------------
-# This is the config for gNewSense, alter as appropriate for your own distro
-# NOTE: The suggested way of changing this file is copy it to config.local and
-# edit that instead.
-# -----------------------------------------------------------------------------
+## ==============================================
+## This is the configuration area for the distro
+## ==============================================
+
+# --------------------
+# You need to be root
+# --------------------
 
 if [ $UID != 0 ]; then
 	echo 'This script must be run as root'
@@ -43,40 +45,79 @@ set -ex
 # Path to your Ubuntu dists tree. Note that the name is historical -
 # previously this *WAS* a local ubuntu mirror. With changes to builder,
 # this is now just the dists/ directory of the mirror (~40mb).
-MIRRORLOCAL=/srv/ubuntu-hardy-mirror/
+MIRROR_LOCAL=/srv/ubuntu-hardy-mirror/
 # Where to get updated upstream packages from. Currently only supports http
 # This should be configured to point at a local mirror (on your
 # network), or a local proxy (eg apt-cacher-ng). If using a proxy, you
 # should ensure that is configured to get its packages from a nearby mirror.
-MIRROR=http://127.0.0.1:3142/ubuntu.media.mit.edu/ubuntu/
+MIRROR=http://ftp.de.debian.org/debian/
 # Name of our upstreams release
-MIRRORDIST=hardy
+MIRRORDIST=wheezy
+
+# ---------
+# Security
+# ---------
+SEC_MIRROR=http://security.debian.org/debian/
+SEC_MIRRORDIST=wheezy/updates
+# --------
+# Updates
+# --------
+UPD_MIRROR=http://ftp.de.debian.org/
+UPD_MIRRORDIST=wheezy-updates
+# ----------
+# Backports
+# ----------
+BP_MIRROR=http://ftp.de.debian.org/debian-backports/
+BP_MIRRORDIST=wheezy-backports
+
+# -----
+# Mate 
+# ----
+MATE_MIRROR=http://ftp.de.debian.org/debian/
+MATE_MIRRORDIST=wheezy
+
+# -----------
+# Multimedia
+# ----------
+MM_MIRROR=http://www.deb-multimedia.org/
+MM_MIRRORDIST=wheezy
+
+
 
 ## DISTRO SPECIFIC CONFIGURATION
 # May break if you use anything other than letters and numbers
 # If you change $DISTRONAME you may need to modify META_desktop_ADD or create
 # your own artwork packages.
-DISTRONAME=gNewSense
+DISTRONAME=SharkOS
 DISTRONAME_L=`echo $DISTRONAME | tr 'A-Z' 'a-z'`
 
 # What is the codename for our release?
-BASE_RELEASE=deltah
+BASE_RELEASE=megalodon
 [ -z $RELEASE ] && RELEASE=$BASE_RELEASE
 
-TAGLINE="Free as in Freedom"
+TAGLINE=""
 
 # This is the 8 character key ID, not the full fingerprint
-SIGNINGKEY=91854607
+SIGNINGKEY=51FA5577
+
+# ---------------------------------
+# New Component names.
+# what is now main,contrib,non-free
+# ---------------------------------
+COMP1=coast
+COMP2=ocean
+COMP3=deepsea
+
 
 # Name and email address for changes. Syntax is important.
-export MAINTINFO='gNewSense hackers <gnewsense-dev@nongnu.org>'
+export MAINTINFO='SharkOS Dev Key (SharkOS Automated Development Key) <keyadmin@shark-os.tk>'
 
 # Do you want to enable backports and updates?
-UPDATES=1
-BACKPORTS=1
+UPDATES=0
+BACKPORTS=0
 
 # Which architectures will we have in our repository (list all of them)
-ALL_REPO_ARCHES="i386"
+ALL_REPO_ARCHES="i386 amd64"
 
 ## MID STREAM
 # Where things go on the filesystem
@@ -86,45 +127,50 @@ BASEDIR=/srv/$DISTRONAME_L
 REPOAPT=http://127.0.0.1/$DISTRONAME_L
 
 ## LIVE CD
-LIVECD_VERSION=2.3
+LIVECD_VERSION=1.0
 
 ## ARCHIVE AND MEDIA
 # Primary mirror should be archive.$DOMAIN, secondaries are CC.archive.$DOMAIN
 # Security host will be security.$DOMAIN and CC.security.$DOMAIN
 # Launchpad queries are redirected to lp.$DOMAIN
 # Bittorrent will use http://torrent.$DOMAIN:6969/announce
-DOMAIN=gnewsense.org
+DOMAIN=shark-os.tk
 
 # Optional bittorrent announce list (btmakemetafile.bittornado --help)
 BITTORRENT_ANNOUNCE_LIST=''
 
+## -----------
+## RSYNC STUFF
+## -----------
 # Where to push the repo and livecds
-RSYNC_DEST=sandbox@archive.$DOMAIN:/srv/$DISTRONAME_L-$BASE_RELEASE/
+RSYNC_DEST=sandbox@repo.$DOMAIN:/srv/$DISTRONAME_L/
 # Extra options for rsyncing up cds, -va is assumed
 RSYNC_OPTIONS="--partial"
 
+## --------
 ## ARTWORK
-LOGO_LETTER=g
-LOGO_COLOUR=green	# Don't choose black or yellow
+## -------
+LOGO_LETTER=S
+LOGO_COLOUR=blue	# Don't choose black or yellow
 
 # Changes to be made to the ubuntu-minimal etc. and packages
 META_minimal_ADD=""
 META_standard_ADD="emacs nethack bsdgames build-essential"
-META_desktop_ADD="gnewsense-artwork gnewsense-gdm-themes epiphany-browser openoffice.org-fix usplash-theme-gnewsense discover read-edid"
-META_desktop_ADD="${META_desktop_ADD} gthumb gnote aspell-en gnewsense-external"
+META_desktop_ADD="$DISTRONAME_L-artwork $DISTRONAME_L-gdm-themes epiphany-browser openoffice.org-fix usplash-theme-$DISTRONAME_L discover read-edid"
+META_desktop_ADD="${META_desktop_ADD} gthumb gnote aspell-en"
 META_minimal_REMOVE=""
-META_standard_REMOVE="popularity-contest friendly-recovery"
-META_desktop_REMOVE="ubuntu-docs ubuntu-artwork apport-gtk hwtest-gtk usplash-theme-ubuntu ubuntu-gdm-themes"
+META_standard_REMOVE="friendly-recovery"
+META_desktop_REMOVE="debian-docs debian-artwork apport-gtk hwtest-gtk debian-gdm-themes"
 META_desktop_REMOVE="${META_desktop_REMOVE} firefox ubufox firefox-gnome-support jockey-gtk app-install-data-commercial"
-META_desktop_REMOVE="${META_desktop_REMOVE} tomboy f-spot ubuntu-sounds"
+META_desktop_REMOVE="${META_desktop_REMOVE} tomboy f-spot"
 
 # Packages to install on the live cd not pulled in by META_* changes
-LIVECD_EXTRAS="ubiquity xresprobe binutils-static gvfs-fuse gparted jfsutils ntfsprogs xfsprogs vim"
+LIVECD_EXTRAS="xresprobe binutils-static gvfs-fuse gparted jfsutils ntfsprogs xfsprogs vim"
 
-FIREFOX_NAME=BurningDog
+FIREFOX_NAME=KillerWhale
 
 # Extra packages to add to the source cd
-CDSOURCE_ADD="builder"
+CDSOURCE_ADD="reforgerer"
 
 # Extra packages to install in the chroot
 CHROOT_EXTRA_PACKAGES="cdbs python-dev python-distutils-extra python-central libusplash-dev ccache"
@@ -191,7 +237,7 @@ REPODST=$BASEDIR/$DISTRONAME_L
 OVERRIDEFILE=$REPODST/conf/override.$RELEASE
 
 # Space separated list of repo components. Put the default first.
-COMPONENTS="main universe"
+COMPONENTS="$COMP1 $COMP2 $COMP3"
 
 # Allow for local customisations
 if [ -r config.local ]; then . config.local; fi

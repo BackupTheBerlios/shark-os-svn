@@ -40,14 +40,14 @@ cat << EOF >> doc/examples/sources.list
 # See sources.list(5) for more information, especialy
 # Remember that you can only use http, ftp or file URIs
 # CDROMs are managed through the apt-cdrom tool.
-deb http://us.archive.gnewsense.org/gnewsense deltah main universe
-deb-src http://us.archive.gnewsense.org/gnewsense deltah main universe
+deb http://repo.$DOMAIN/$DISTRONAME_L $BASE_RELEASE $COMP1 $COMP2 $COMP3
+deb-src http://repo.$DOMAIN/$DISTRONAME_L $BASE_RELEASE $COMP1 $COMP2 $COMP3
 
-deb http://security.gnewsense.org/gnewsense deltah-security main universe
-deb-src http://security.gnewsense.org/gnewsense deltah-security main universe
+deb http://security.$DOMAIN/$DISTRONAME_L $BASE_RELEASE-security $COMP1 $COMP2 $COMP3
+deb-src http://security.$DOMAIN/$DISTRONAME_L $BASE_RELEASE-security $COMP1 $COMP2 $COMP3
 
-deb http://us.archive.gnewsense.org/gnewsense deltah-updates main universe
-deb-src http://us.archive.gnewsense.org/gnewsense deltah-updates main universe
+deb http://repo.$DOMAIN/$DISTRONAME_L $BASE_RELEASE-updates $COMP1 $COMP2 $COMP3
+deb-src http://repo.$DOMAIN/$DISTRONAME_L $BASE_RELEASE-updates $COMP1 $COMP2 $COMP3
 EOF
 
 echo | dch -D $RELEASE -v $(sed  -n '1s#^.*(\(.*\)).*#\1'${DISTRONAME_L}${APT_VERSION}'#p' debian/changelog) "Changed for $DISTRONAME"
