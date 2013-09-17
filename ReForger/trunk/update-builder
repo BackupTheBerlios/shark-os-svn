@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Get latest version of the builder
-
-bzr merge
-./gen-builder
