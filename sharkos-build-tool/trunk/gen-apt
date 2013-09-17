@@ -1,0 +1,72 @@
+#!/bin/bash
+
+###############################################################################
+#    (C) 2012 hyperclock (aka Jimmy M. Coleman)
+#	 website:  www.shark-os.tk
+#	 email:    hyperclock(at)sharkos-os(dot)tk
+#	 git:	   https://github.com/hyperclock/sharkos-build-tool
+# 
+###############################################################################
+###############################################################################
+#    sharkos-build-tool - Scripts designed to build SharkOS based on Debian.
+#
+#    sharkos-build-tool is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    sharkos-build-tool is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy (see docs/gpl-3.0.txt) of the GNU General 
+#    Public License along with sharkos-build-tool.  If not, see 
+#    <http://www.gnu.org/licenses/>.
+#
+################################################################################
+########################### Original Info ###################################### 
+#
+#    Copyright (C) 2010 Karl Goetz
+#
+#    Original License: GPLv2
+#
+################################################################################
+
+
+. config
+
+rm -rf $WORKINGDIR
+mkdir -p $WORKINGDIR
+cd $WORKINGDIR
+
+apt-get source apt
+apt-get --yes build-dep apt
+cd apt-*
+
+rm doc/examples/sources.list
+cat << EOF >> doc/examples/sources.list
+## DolphinOS MAIN Repo
+deb http://repo.dolphin-os.net/dolphinos dusky main universe multiverse restricted
+deb-src http://repo.dolphin-os.net/dolphinos dusky main universe multiverse restricted
+
+## DolphinOS SECURITY Repo
+deb http://repo.dolphin-os.net/dolphinos dusky-security main universe multiverse restricted
+deb-src http://repo.dolphin-os.net/dolphinos dusky-security main universe multiverse restricted
+
+## DolphinOS UPDATES Repo
+deb http://repo.dolphin-os.net/dolphinos dusky-updates main universe multiverse restricted
+deb-src http://repo.dolphin-os.net/dolphinos dusky-updates main universe multiverse restricted
+
+## DolphinOS BACKPORTS Repo
+deb http://repo.dolphin-os.net/dolphinos dusky-backports main universe multiverse restricted
+deb-src http://repo.dolphin-os.net/dolphinos dusky-backports main universe multiverse restricted
+
+## DolphinOS MATE DE Repo
+deb http://repo.dolphin-os.net/dolphinos dusky-mate main
+deb-src http://repo.dolphin-os.net/dolphinos dusky-mate main
+EOF
+
+echo | dch -D $RELEASE -v $(sed  -n '1s#^.*(\(.*\)).*#\1'${DISTRONAME_L}${APT_VERSION}'#p' debian/changelog) "Changed for $DISTRONAME"
+
+dpkg-buildpackage $DPKGOPTS

@@ -1,0 +1,147 @@
+#!/bin/bash
+
+##########################################################################################
+#  Copyright (c) 2012 hyperclock (aka Jimmy M. Coleman). hyperclockATwebDOTde
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is furnished
+#  to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all 
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+#  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+#  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+#  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+#  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+#  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+###########################################################################################
+
+. config
+
+
+# -------------------------
+# set cronjob for reprepro
+# ------------------------
+cat >> /etc/cron.d/reprepro <<EOF
+* * * * * root /usr/bin/reprepro -b $BUILD_DEST processincoming $DIST_RELEASE
+* * * * * root /usr/bin/reprepro -b $BUILD_DEST processincoming $DIST_RELEASE-security
+* * * * * root /usr/bin/reprepro -b $BUILD_DEST processincoming $DIST_RELEASE-updates
+* * * * * root /usr/bin/reprepro -b $BUILD_DEST processincoming $DIST_RELEASE-backports
+EOF
+
+# ----------------------
+# edit "local" in dput 
+# ---------------------
+mv /etc/dput.cf /etc/dput.cf.bkup
+touch /etc/dput.cf
+cat >>  /etc/dput.cf <<EOF
+[local]
+method                  = local
+incoming                = $BUILD_DEST/incoming
+run_dinstall            = 0
+EOF
+
+#### FIX THIS (to auto)
+nano /etc/default/rebuildd    #### configure as follows:
+
+START_REBUILDD=1
+DISTS="$DIST_RELEASE"
+
+#############
+
+sudo rebuildd-init-build-system
+sudo rebuildd init
+
+#### FIX THIS (to auto)
++++ Add the local repository to /etc/apt/sources.list +++
+   nano /etc/apt/sources.list
+deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE $DIST_COMP
+deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-security $DIST_COMP
+deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-updates $DIST_COMP
+deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-backports $DIST_COMP
+##################
+
+cat >> $BUILD_DEST/bin/addjobs <<EOF
+#!/bin/sh
+# addjobs
+
+action=$1 release=squeeze package=$3 version=$4 changes=$5 priority=1
+
+# Check if a source package accepted
+[ "$action" != "accepted" ] && exit 0
+echo "$changes" | grep -q "_source\.changes" || exit 0
+
+# Queue build of the package
+echo "$package $version $priority $release" | \
+    /usr/sbin/rebuildd-job add
+EOF
+
+
+
+cat >> $BUILD_DEST/bin/getsrc <<EOF
+#!/bin/sh
+# getsrc
+
+d=$1 p=$2 v=$3
+
+apt-get -q update
+
+apt-get -q --download-only -t ${d} source ${p}=${v}
+EOF
+
+
+
+cat >> $BUILD_DEST/bin/putres <<EOF
+#!/bin/sh
+# putres
+
+d=$1 p=$2 v=$3 a=$4
+
+changes=/var/cache/pbuilder/result/${p}_${v}_${a}.changes
+
+debsign $changes
+dput local $changes
+EOF
+
+chmod 777 $BUILD_DEST/bin/addjobs
+chmod 777 $BUILD_DEST/bin/getsrc
+chmod 777 $BUILD_DEST/bin/putres
+
+
+### FIX ME 
+##################################### DO THIS WISELY ###################
+Edit /etc/rebuildd/rebuilddrc configuration as follows:
+
+source_cmd = $BUILD_DEST/bin/getsrc ${d} ${p} ${v}
+post_build_cmd = $BUILD_DEST/bin/putres ${d} ${p} ${v} ${a}
+build_cmd = pbuilder build --debbuildopts -b --basetgz /var/cache/pbuilder/${d}-${a}.tgz ${p}_${v}.dsc
+
+###########################
+
+nano $BUILD_DEST/conf/distributions   ## add the next 2 lines
+Log: logfile
+ --changes $BUILD_DEST/bin/addjobs
+
+#####################################################################
+mkdir -pv  /var/lib/pbuilder/hooks/
+cat >> /var/lib/pbuilder/hooks/D50update <<EOF
+#!/bin/sh
+
+/usr/bin/apt-get update
+EOF
+
+
+pbuilder --update --basetgz /var/cache/pbuilder/$DIST_RELEASE-*.tgz --override-config --othermirror "deb http://localhost/$DIST_NAME_SMALL $DIST_RELEASE $DIST_COMP|deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE $DIST_COMP"
+
+pbuilder --update --basetgz /var/cache/pbuilder/$DIST_RELEASE-*.tgz --override-config --othermirror "deb http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-security $DIST_COMP|deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-security $DIST_COMP"
+
+pbuilder --update --basetgz /var/cache/pbuilder/$DIST_RELEASE-*.tgz --override-config --othermirror "deb http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-updates $DIST_COMP|deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-updates $DIST_COMP"
+
+pbuilder --update --basetgz /var/cache/pbuilder/$DIST_RELEASE-*.tgz --override-config --othermirror "deb http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-backports $DIST_COMP|deb-src http://localhost/$DIST_NAME_SMALL $DIST_RELEASE-backports $DIST_COMP"
+
+sudo /etc/init.d/rebuildd start

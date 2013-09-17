@@ -1,0 +1,60 @@
+#!/bin/bash
+
+###############################################################################
+#    (C) 2012 hyperclock (aka Jimmy M. Coleman)
+#	 website:  www.shark-os.tk
+#	 email:    hyperclock(at)sharkos-os(dot)tk
+#	 git:	   https://github.com/hyperclock/sharkos-build-tool
+# 
+###############################################################################
+###############################################################################
+#    sharkos-build-tool - Scripts designed to build SharkOS based on Debian.
+#
+#    sharkos-build-tool is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    sharkos-build-tool is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy (see docs/gpl-3.0.txt) of the GNU General 
+#    Public License along with sharkos-build-tool.  If not, see 
+#    <http://www.gnu.org/licenses/>.
+#
+################################################################################
+########################### Original Info ###################################### 
+#
+#    Copyright (C) 2006 - 2009  Brian Brazil
+#
+#    Original License: GPLv2
+#
+################################################################################
+
+
+
+
+. config
+
+rm -rf $WORKINGDIR
+mkdir -p $WORKINGDIR
+cd $WORKINGDIR
+
+apt-get source app-install-data-ubuntu$VERSION
+apt-get --yes build-dep app-install-data-ubuntu$VERSION
+cd app-install-data-ubuntu*
+
+egrep -lr 'X-AppInstall-Section=(multiverse|restricted)' . | xargs -r rm
+# Let's not confuse people
+rm -f ./menu-data/{firefox{,-2},vlc}.desktop
+
+# Fix proprietary apps being left in menus (ref https://bugs.launchpad.net/ubuntu/+source/app-install-data-commercial/+bug/410975 )
+if [ `grep -c 'update-app-install' debian/postinst` -eq 0 ]; then
+	echo -e "\nupdate-app-install || true\n" >> debian/postinst
+fi
+
+echo | dch -D $RELEASE -v $(sed  -n '1s#^.*(\(.*\)).*#\1'${DISTRONAME_L}${APP_INSTALL_DATA_UBUNTU_VERSION}'#p' debian/changelog) "Removed multiverse packages."
+
+dpkg-buildpackage $DPKGOPTS

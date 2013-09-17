@@ -1,0 +1,58 @@
+#!/bin/bash
+
+###############################################################################
+#    (C) 2012 hyperclock (aka Jimmy M. Coleman)
+#	 website:  www.shark-os.tk
+#	 email:    hyperclock(at)sharkos-os(dot)tk
+#	 git:	   https://github.com/hyperclock/sharkos-build-tool
+# 
+###############################################################################
+###############################################################################
+#    sharkos-build-tool - Scripts designed to build SharkOS based on Debian.
+#
+#    sharkos-build-tool is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    sharkos-build-tool is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy (see docs/gpl-3.0.txt) of the GNU General 
+#    Public License along with sharkos-build-tool.  If not, see 
+#    <http://www.gnu.org/licenses/>.
+#
+################################################################################
+########################### Original Info ###################################### 
+#
+#    Copyright (C) 2006 - 2009  Brian Brazil
+#
+#    Original License: GPLv2
+#
+################################################################################
+
+
+#
+
+# Puts the livecd image and source in place to be pushed
+
+
+. config
+
+# Tar up the source
+
+cd $LIVECDDIR-src/
+if [ -d  $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION ]; then
+	tar -cf  $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION
+	cd $REPODST/cdimage
+	mv $LIVECDDIR-src/$DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar .
+	sed -i "/ $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar$/d" MD5SUMS
+	md5sum $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar >> MD5SUMS
+	sed -i "/ $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar$/d" SHA256SUMS
+	sha256sum $DISTRONAME_L-cdsource-$RELEASE-$GNS_HOST_ARCH-$LIVECD_VERSION.tar >> SHA256SUMS
+fi
+cd $REPODST/cdimage
+gpg -u $SIGNINGKEY --clearsign MD5SUMS
+mv MD5SUMS.asc MD5SUMS.gpg

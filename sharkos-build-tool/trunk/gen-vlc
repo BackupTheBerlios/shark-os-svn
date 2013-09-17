@@ -1,0 +1,61 @@
+#!/bin/bash
+
+###############################################################################
+#    (C) 2012 hyperclock (aka Jimmy M. Coleman)
+#	 website:  www.shark-os.tk
+#	 email:    hyperclock(at)sharkos-os(dot)tk
+#	 git:	   https://github.com/hyperclock/sharkos-build-tool
+# 
+###############################################################################
+###############################################################################
+#    sharkos-build-tool - Scripts designed to build SharkOS based on Debian.
+#
+#    sharkos-build-tool is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    sharkos-build-tool is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy (see docs/gpl-3.0.txt) of the GNU General 
+#    Public License along with sharkos-build-tool.  If not, see 
+#    <http://www.gnu.org/licenses/>.
+#
+################################################################################
+########################### Original Info ###################################### 
+#
+#    Copyright (C) 2009  Andrew Wiggelsworth
+#
+#    Original License: GPLv2
+#
+################################################################################
+
+
+
+
+. config
+
+rm -rf $WORKINGDIR
+mkdir -p $WORKINGDIR
+cd $WORKINGDIR
+
+apt-get source vlc$VERSION
+cd vlc-*
+
+# Non-free file to remove
+rm modules/stream_out/transrate/putvlc.h
+
+# Edit debian/control to depend on the (older) automake required.
+sed -i -e  's/automake/automake1.9/' debian/control
+
+# Install build dependencies.
+apt-get --yes build-dep vlc$VERSION
+apt-get install automake1.9
+
+echo | dch -D $RELEASE -v $(sed  -n '1s#^.*(\(.*\)).*#\1'${DISTRONAME_L}${VLC_VERSION}'#p' debian/changelog)  "Changed to remove non-free file"
+
+# dpkg-buildpackage --ignore=missing $DPKGOPTS
+dpkg-buildpackage $DPKGOPTS
